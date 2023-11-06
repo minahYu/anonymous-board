@@ -2,10 +2,7 @@ package com.sparta.anonymousboard.controller;
 
 import com.sparta.anonymousboard.dto.PostRequestDto;
 import com.sparta.anonymousboard.dto.PostResponseDto;
-import com.sparta.anonymousboard.entity.Post;
 import com.sparta.anonymousboard.service.PostService;
-import org.apache.coyote.Response;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +40,7 @@ public class PostController {
 
     @PutMapping("/{id}")
     @ResponseBody
-    public String updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) { // 선택 게시물 수정
+    public PostResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) { // 선택 게시물 수정
         return postService.updatePost(id, requestDto);
     }
 
