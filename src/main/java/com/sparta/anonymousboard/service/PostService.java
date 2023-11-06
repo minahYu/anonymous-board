@@ -1,5 +1,7 @@
 package com.sparta.anonymousboard.service;
 
+import com.sparta.anonymousboard.Exception.MismatchException;
+import com.sparta.anonymousboard.Exception.NotFoundException;
 import com.sparta.anonymousboard.dto.PostRequestDto;
 import com.sparta.anonymousboard.dto.PostResponseDto;
 import com.sparta.anonymousboard.entity.Post;
@@ -19,7 +21,6 @@ public class PostService {
 
     public PostResponseDto createPost(PostRequestDto requestDto) {
         Post post = new Post(requestDto);
-
         Post savePost = postRepository.save(post);
 
         PostResponseDto postResponseDto = new PostResponseDto(post);
@@ -32,11 +33,34 @@ public class PostService {
     }
 
     @Transactional
-    public Long updatePost(Long id, PostRequestDto requestDto) {
+    public String updatePost(Long id, PostRequestDto requestDto) {
         Post post = findPost(id);
-        if(checkPW(id, requestDto))
+        String msg = "글이 수정되었습니다.";
+        if (post == null)
+            throw new NotFoundException(id);
+
+        try {
+            checkPW(id, requestDto);
             post.update(requestDto);
-        return id;
+        } catch (MismatchException e) {
+            msg = e.getMessage();
+        }
+        return msg;
+    }
+
+    public String deletePost(Long id, String password) {
+        Post post = findPost(id);
+        String msg = "글이 삭제되었습니다.";
+        if (post == null)
+            throw new NotFoundException(id);
+
+        try {
+            checkPW(id, password);
+            postRepository.delete(post);
+        } catch (MismatchException e) {
+            msg = e.getMessage();
+        }
+        return msg;
     }
 
     public Post findPost(Long id) {
@@ -45,9 +69,19 @@ public class PostService {
         );
     }
 
-    public boolean checkPW(Long id, PostRequestDto requestDto) {
+    public void checkPW(Long id, PostRequestDto requestDto) throws MismatchException {
         Post getPost = postRepository.getById(id);
 
-        return getPost.getPassword().equals(requestDto.getPassword());
+        if (!getPost.getPassword().equals(requestDto.getPassword())) {
+            throw new MismatchException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+    public void checkPW(Long id, String password) throws MismatchException {
+        Post getPost = postRepository.getById(id);
+
+        if (!getPost.getPassword().equals(password)) {
+            throw new MismatchException("비밀번호가 일치하지 않습니다.");
+        }
     }
 }

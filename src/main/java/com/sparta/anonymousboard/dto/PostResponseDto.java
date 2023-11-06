@@ -2,7 +2,6 @@ package com.sparta.anonymousboard.dto;
 
 import com.sparta.anonymousboard.entity.Post;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
