@@ -1,4 +1,4 @@
-package com.sparta.anonymousboard.Exception;
+package com.sparta.anonymousboard.exception;
 
 public class MismatchException extends RuntimeException {
     public MismatchException(String message) {
