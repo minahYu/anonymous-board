@@ -1,14 +1,13 @@
 package com.sparta.anonymousboard.service;
 
+import com.sparta.anonymousboard.Exception.MismatchException;
+import com.sparta.anonymousboard.Exception.NotFoundException;
 import com.sparta.anonymousboard.dto.PostRequestDto;
 import com.sparta.anonymousboard.dto.PostResponseDto;
 import com.sparta.anonymousboard.entity.Post;
 import com.sparta.anonymousboard.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -22,7 +21,6 @@ public class PostService {
 
     public PostResponseDto createPost(PostRequestDto requestDto) {
         Post post = new Post(requestDto);
-
         Post savePost = postRepository.save(post);
 
         PostResponseDto postResponseDto = new PostResponseDto(post);
@@ -35,19 +33,34 @@ public class PostService {
     }
 
     @Transactional
-    public Long updatePost(Long id, PostRequestDto requestDto) {
+    public String updatePost(Long id, PostRequestDto requestDto) {
         Post post = findPost(id);
-        post.update(requestDto);
+        String msg = "글이 수정되었습니다.";
+        if (post == null)
+            throw new NotFoundException(id);
 
-        return id;
+        try {
+            checkPW(id, requestDto);
+            post.update(requestDto);
+        } catch (MismatchException e) {
+            msg = e.getMessage();
+        }
+        return msg;
     }
 
-    public Long deletePost(Long id, String password) {
+    public String deletePost(Long id, String password) {
         Post post = findPost(id);
-        if(checkPW(id, password))
-            postRepository.delete(post);
+        String msg = "글이 삭제되었습니다.";
+        if (post == null)
+            throw new NotFoundException(id);
 
-        return id;
+        try {
+            checkPW(id, password);
+            postRepository.delete(post);
+        } catch (MismatchException e) {
+            msg = e.getMessage();
+        }
+        return msg;
     }
 
     public Post findPost(Long id) {
@@ -56,8 +69,19 @@ public class PostService {
         );
     }
 
-    public boolean checkPW(Long id, String password) {
+    public void checkPW(Long id, PostRequestDto requestDto) throws MismatchException {
         Post getPost = postRepository.getById(id);
-        return getPost.getPassword().equals(password);
+
+        if (!getPost.getPassword().equals(requestDto.getPassword())) {
+            throw new MismatchException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
+    public void checkPW(Long id, String password) throws MismatchException {
+        Post getPost = postRepository.getById(id);
+
+        if (!getPost.getPassword().equals(password)) {
+            throw new MismatchException("비밀번호가 일치하지 않습니다.");
+        }
     }
 }
