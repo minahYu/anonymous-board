@@ -44,7 +44,7 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     @ResponseBody
-    public String deletePost(@PathVariable Long id, @RequestHeader(value = "password") String password) { // 선택 게시물 삭제
-        return postService.deletePost(id, password);
+    public String deletePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) { // 선택 게시물 삭제
+        return postService.deletePost(id, requestDto);
     }
 }

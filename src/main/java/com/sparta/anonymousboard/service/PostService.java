@@ -50,14 +50,14 @@ public class PostService {
         return msg;
     }
 
-    public String deletePost(Long id, String password) {
+    public String deletePost(Long id, PostRequestDto requestDto) {
         Post post = findPost(id);
         String msg = "글이 삭제되었습니다.";
         if (post == null)
             throw new NotFoundException(id);
 
         try {
-            checkPW(id, password);
+            checkPW(id, requestDto);
             postRepository.delete(post);
         } catch (MismatchException e) {
             msg = e.getMessage();
@@ -75,14 +75,6 @@ public class PostService {
         Post getPost = postRepository.getById(id);
 
         if (!getPost.getPassword().equals(requestDto.getPassword())) {
-            throw new MismatchException("비밀번호가 일치하지 않습니다.");
-        }
-    }
-
-    public void checkPW(Long id, String password) throws MismatchException {
-        Post getPost = postRepository.getById(id);
-
-        if (!getPost.getPassword().equals(password)) {
             throw new MismatchException("비밀번호가 일치하지 않습니다.");
         }
     }
