@@ -34,8 +34,8 @@ public class PostService {
     @Transactional
     public Long updatePost(Long id, PostRequestDto requestDto) {
         Post post = findPost(id);
-        post.update(requestDto);
-
+        if(checkPW(id, requestDto))
+            post.update(requestDto);
         return id;
     }
 
@@ -43,5 +43,11 @@ public class PostService {
         return postRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
+    }
+
+    public boolean checkPW(Long id, PostRequestDto requestDto) {
+        Post getPost = postRepository.getById(id);
+
+        return getPost.getPassword().equals(requestDto.getPassword());
     }
 }
