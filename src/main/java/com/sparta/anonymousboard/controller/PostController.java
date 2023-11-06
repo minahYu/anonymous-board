@@ -2,8 +2,6 @@ package com.sparta.anonymousboard.controller;
 
 import com.sparta.anonymousboard.dto.PostRequestDto;
 import com.sparta.anonymousboard.dto.PostResponseDto;
-import com.sparta.anonymousboard.entity.Post;
-import com.sparta.anonymousboard.repository.PostRepository;
 import com.sparta.anonymousboard.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +11,7 @@ import java.util.Objects;
 
 
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/api/posts")
 public class PostController {
     private final PostService postService;
 
@@ -21,28 +19,29 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping("/post")
+    @PostMapping()
     @ResponseBody
     public PostResponseDto createPost(@RequestBody PostRequestDto requestDto) { // 게시물 작성
         return postService.createPost(requestDto);
     }
 
-   @GetMapping("/post/{postId}")
+   @GetMapping("{id}")
    @ResponseBody
-    public PostResponseDto getPost(@PathVariable Long postId) { // 선택 게시물 조회
+    public PostResponseDto getPost(@PathVariable Long id) { // 선택 게시물 조회
         return postService.getPost().stream()
-                .filter(post -> Objects.equals(post.getId(), postId))
+                .filter(post -> Objects.equals(post.getId(), id))
                 .toList().get(0);
     }
 
-     @GetMapping("/posts")
+     @GetMapping()
      @ResponseBody
     public List<PostResponseDto> getPosts() { // 게시물 목록 조회
         return postService.getPost();
     }
 
-    /*@GetMapping("/post/{postId}")
-    public void updatePost() { // 선택 게시물 수정
-        
-    }*/
+    @PutMapping("/{id}")
+    @ResponseBody
+    public Long updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) { // 선택 게시물 수정
+        return postService.updatePost(id, requestDto);
+    }
 }

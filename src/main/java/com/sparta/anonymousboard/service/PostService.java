@@ -4,6 +4,7 @@ import com.sparta.anonymousboard.dto.PostRequestDto;
 import com.sparta.anonymousboard.dto.PostResponseDto;
 import com.sparta.anonymousboard.entity.Post;
 import com.sparta.anonymousboard.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,6 +29,14 @@ public class PostService {
 
     public List<PostResponseDto> getPost() {
         return postRepository.findAll().stream().map(PostResponseDto::new).toList();
+    }
+
+    @Transactional
+    public Long updatePost(Long id, PostRequestDto requestDto) {
+        Post post = findPost(id);
+        post.update(requestDto);
+
+        return id;
     }
 
     public Post findPost(Long id) {
