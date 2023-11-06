@@ -7,11 +7,10 @@ import com.sparta.anonymousboard.dto.PostResponseDto;
 import com.sparta.anonymousboard.entity.Post;
 import com.sparta.anonymousboard.repository.PostRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class PostService {
@@ -51,14 +50,14 @@ public class PostService {
     }
 
     public String deletePost(Long id, PostRequestDto requestDto) {
-        Post post = findPost(id);
+        Post findPost = findPost(id);
         String msg = "글이 삭제되었습니다.";
-        if (post == null)
+        if (findPost == null)
             throw new NotFoundException(id);
 
         try {
             checkPW(id, requestDto);
-            postRepository.delete(post);
+            postRepository.delete(findPost);
         } catch (MismatchException e) {
             msg = e.getMessage();
         }

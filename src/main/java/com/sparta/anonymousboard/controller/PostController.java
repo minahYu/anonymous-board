@@ -4,9 +4,12 @@ import com.sparta.anonymousboard.dto.PostRequestDto;
 import com.sparta.anonymousboard.dto.PostResponseDto;
 import com.sparta.anonymousboard.entity.Post;
 import com.sparta.anonymousboard.service.PostService;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @RestController
@@ -26,8 +29,10 @@ public class PostController {
 
     @GetMapping("{id}")
     @ResponseBody
-    public Post getPost(@PathVariable Long id) { // 선택 게시물 조회
-        return postService.findPost(id);
+    public PostResponseDto getPost(@PathVariable Long id) { // 선택 게시물 조회
+        return postService.getPost().stream()
+                .filter(post -> Objects.equals(post.getId(), id))
+                .toList().get(0);
     }
 
     @GetMapping()

@@ -1,11 +1,13 @@
 package com.sparta.anonymousboard.dto;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public class PostRequestDto {
-    private String title;
-    private String writer;
+    private final String title;
+    private final String writer;
     private String password;
-    private String contents;
+    private final String contents;
 }
