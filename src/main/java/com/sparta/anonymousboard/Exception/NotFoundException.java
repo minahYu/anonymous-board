@@ -1,4 +1,4 @@
-package com.sparta.anonymousboard.exception;
+package com.sparta.anonymousboard.Exception;
 
 import lombok.Getter;
 
