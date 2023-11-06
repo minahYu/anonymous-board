@@ -1,7 +1,7 @@
 package com.sparta.anonymousboard.service;
 
-import com.sparta.anonymousboard.Exception.MismatchException;
-import com.sparta.anonymousboard.Exception.NotFoundException;
+import com.sparta.anonymousboard.exception.MismatchException;
+import com.sparta.anonymousboard.exception.NotFoundException;
 import com.sparta.anonymousboard.dto.PostRequestDto;
 import com.sparta.anonymousboard.dto.PostResponseDto;
 import com.sparta.anonymousboard.entity.Post;
