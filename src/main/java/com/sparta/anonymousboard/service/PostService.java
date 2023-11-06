@@ -34,7 +34,7 @@ public class PostService {
     }
 
     @Transactional
-    public String updatePost(Long id, PostRequestDto requestDto) {
+    public PostResponseDto updatePost(Long id, PostRequestDto requestDto) {
         Post post = findPost(id);
         String msg = "글이 수정되었습니다.";
         if (post == null)
@@ -46,7 +46,10 @@ public class PostService {
         } catch (MismatchException e) {
             msg = e.getMessage();
         }
-        return msg;
+
+        return new PostResponseDto(post, msg);
+
+        //return msg;
     }
 
     public String deletePost(Long id, PostRequestDto requestDto) {
