@@ -2,9 +2,14 @@ package com.sparta.anonymousboard.controller;
 
 import com.sparta.anonymousboard.dto.PostRequestDto;
 import com.sparta.anonymousboard.dto.PostResponseDto;
+import com.sparta.anonymousboard.entity.Post;
+import com.sparta.anonymousboard.repository.PostRepository;
 import com.sparta.anonymousboard.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Objects;
 
 
 @Controller
@@ -22,15 +27,19 @@ public class PostController {
         return postService.createPost(requestDto);
     }
 
-   /* @GetMapping("/post/{postId}")
-    public void getPost(@PathVariable Long postId) { // 선택 게시물 조회
-
+   @GetMapping("/post/{postId}")
+   @ResponseBody
+    public PostResponseDto getPost(@PathVariable Long postId) { // 선택 게시물 조회
+        return postService.getPost().stream()
+                .filter(post -> Objects.equals(post.getId(), postId))
+                .toList().get(0);
     }
 
-    @GetMapping("/posts")
-    public void getPosts() { // 게시물 목록 조회
-
-    }*/
+     @GetMapping("/posts")
+     @ResponseBody
+    public List<PostResponseDto> getPosts() { // 게시물 목록 조회
+        return postService.getPost();
+    }
 
     /*@GetMapping("/post/{postId}")
     public void updatePost() { // 선택 게시물 수정
