@@ -44,4 +44,9 @@ public class PostController {
     public Long updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) { // 선택 게시물 수정
         return postService.updatePost(id, requestDto);
     }
+
+    @DeleteMapping("/{id}")
+    public Long deletePost(@PathVariable Long id, @RequestHeader(value = "password")String password) { // 선택 게시물 삭제
+        return postService.deletePost(id, password);
+    }
 }

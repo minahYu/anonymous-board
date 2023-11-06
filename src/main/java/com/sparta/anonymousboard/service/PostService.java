@@ -6,6 +6,9 @@ import com.sparta.anonymousboard.entity.Post;
 import com.sparta.anonymousboard.repository.PostRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -39,9 +42,22 @@ public class PostService {
         return id;
     }
 
+    public Long deletePost(Long id, String password) {
+        Post post = findPost(id);
+        if(checkPW(id, password))
+            postRepository.delete(post);
+
+        return id;
+    }
+
     public Post findPost(Long id) {
         return postRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 게시글이 존재하지 않습니다.")
         );
+    }
+
+    public boolean checkPW(Long id, String password) {
+        Post getPost = postRepository.getById(id);
+        return getPost.getPassword().equals(password);
     }
 }
